@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+    <!--<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" >-->
+        <!--<property name="driverClassName" value="com.mysql.jdbc.Driver"/>-->
+        <!--<property name="url" value="jdbc:mysql://localhost:3306/GasStations"/>-->
+        <!--<property name="username" value="root"/>-->
+        <!--<property name="password" value="rumin"/>-->
+    <!--</bean>-->
+
+    <!-- Hibernate SessionFactory -->
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate5.annotation.AnnotationSessionFactoryBean">
+        <property name="configLocation" value="classpath:hibernate.cfg.xml"/>
+
+    </bean>
+
+    <bean id="userDAO" class="web.test.dao.UserDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+</beans>
