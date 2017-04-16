@@ -2,6 +2,7 @@ package web.test.controller;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,6 +19,9 @@ import java.util.List;
  */
 @Controller
 public class HelloController {
+    @Autowired
+    private SessionFactory sessionFactory;
+
     @RequestMapping(value = "/")
     public ModelAndView homepage() {
         return new ModelAndView("index");
@@ -42,8 +46,6 @@ public class HelloController {
     }
 
     public List<User> getUsersList() {
-
-        SessionFactory sessionFactory = HibUtil.getSessionFactory();
         Session session = sessionFactory.openSession();
         List<User> usersList = (ArrayList<User>) session.createCriteria(User.class).list();
         session.close();
