@@ -8,13 +8,13 @@
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
 
         <!-- Assume TestDB is the database name -->
-        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/GasStations</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/test1</property>
         <property name="hibernate.connection.username">root</property>
         <property name="hibernate.connection.password">rumin</property>
         <property name="hibernate.hbm2ddl.auto">update</property>
 
         <!-- List of XML mapping files -->
-        <mapping resource="Employee.hbm.xml"/>
+        <mapping class="web.test.model.User"/>
 
     </session-factory>
 </hibernate-configuration>
