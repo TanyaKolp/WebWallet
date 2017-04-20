@@ -7,8 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import web.test.hibernate.HibUtil;
 import web.test.model.User;
+import web.test.service.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,9 @@ import java.util.List;
 @Controller
 public class HelloController {
     @Autowired
-    private SessionFactory sessionFactory;
+    private UserService userService;
+//    @Autowired
+//    private SessionFactory sessionFactory;
 
     @RequestMapping(value = "/")
     public ModelAndView homepage() {
@@ -37,20 +39,11 @@ public class HelloController {
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     public ModelAndView allUsers() {
-        List<User> list = getUsersList();
+        List<User> list = userService.getAll();
         //return back to users.jsp
         ModelAndView model = new ModelAndView("users");
         model.addObject("lists", list);
 
         return model;
     }
-
-    public List<User> getUsersList() {
-        Session session = sessionFactory.openSession();
-        List<User> usersList = (ArrayList<User>) session.createCriteria(User.class).list();
-        session.close();
-//        sessionFactory.close();
-        return usersList;
-    }
-
 }
