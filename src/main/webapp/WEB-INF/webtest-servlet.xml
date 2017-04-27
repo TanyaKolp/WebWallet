@@ -42,6 +42,11 @@
         <property name="annotatedClasses">
             <list>
                 <value>web.test.model.User</value>
+                <value>web.test.model.Account</value>
+                <value>web.test.model.Location</value>
+                <value>web.test.model.BudgetHead</value>
+                <value>web.test.model.ServicesSection</value>
+                <value>web.test.model.TypeService</value>
             </list>
         </property>
         <property name="hibernateProperties">
