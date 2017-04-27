@@ -1,5 +1,6 @@
 package web.test.dao.impl;
 
+import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -16,6 +17,8 @@ import java.util.List;
  */
 @Repository
 public class AccountDAOimpl implements AccountDao {
+    static Logger logger = Logger.getLogger(AccountDAOimpl.class);
+
     @Autowired
     public SessionFactory sessionFactory;
 
@@ -31,7 +34,9 @@ public class AccountDAOimpl implements AccountDao {
         Session session;
         try {
             session = sessionFactory.getCurrentSession();
+            logger.info("get current session ");
         } catch (HibernateException e) {
+            logger.info("open session by hand");
             session = sessionFactory.openSession();
         }
         return session;
@@ -63,8 +68,10 @@ public class AccountDAOimpl implements AccountDao {
     }
 
     @Override
+    @Transactional
     public void update(Account model) {
-
+        Session session = getSession();
+        session.saveOrUpdate(model);
     }
 
     @Override

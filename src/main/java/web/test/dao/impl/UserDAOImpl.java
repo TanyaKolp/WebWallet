@@ -1,10 +1,9 @@
 package web.test.dao.impl;
 
+import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +17,8 @@ import java.util.List;
  */
 @Repository
 public class UserDAOImpl implements UserDao {
+    static Logger logger = Logger.getLogger(UserDAOImpl.class);
+
     @Autowired
     public SessionFactory sessionFactory;
 
@@ -37,8 +38,10 @@ public class UserDAOImpl implements UserDao {
     }
 
     @Override
+    @Transactional
     public void update(User model) {
-
+        Session session = getSession();
+        session.saveOrUpdate(model);
     }
 
     @Override
@@ -51,11 +54,11 @@ public class UserDAOImpl implements UserDao {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     @Transactional
     public List<User> getAll() {
         Session session = getSession();
+        logger.info("create query - get all users");
         return session.createQuery("from User").list();
     }
 
@@ -63,6 +66,7 @@ public class UserDAOImpl implements UserDao {
     @Transactional
     public User getUserByName(String name) {
         Session session = getSession();
+        logger.info("create query - get user");
         User user = (User) session.createQuery("from User as u where u.name = '" + name + "'").uniqueResult();
         return user;
     }
@@ -71,7 +75,9 @@ public class UserDAOImpl implements UserDao {
         Session session;
         try {
             session = sessionFactory.getCurrentSession();
+            logger.info("get current session ");
         } catch (HibernateException e) {
+            logger.info("open session by hand");
             session = sessionFactory.openSession();
         }
         return session;
