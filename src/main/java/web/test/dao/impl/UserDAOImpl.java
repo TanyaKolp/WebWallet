@@ -66,8 +66,16 @@ public class UserDAOImpl implements UserDao {
     @Transactional
     public User getUserByName(String name) {
         Session session = getSession();
-        logger.info("create query - get user");
+        logger.info("create query - get by name");
         User user = (User) session.createQuery("from User as u where u.name = '" + name + "'").uniqueResult();
+        return user;
+    }
+
+    @Override
+    public User getUserByLogin(String login) {
+        Session session = getSession();
+        logger.info("create query - get by login");
+        User user = (User) session.createQuery("from User as u where u.login = '" + login + "'").uniqueResult();
         return user;
     }
 

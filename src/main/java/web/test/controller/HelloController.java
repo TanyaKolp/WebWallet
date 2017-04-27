@@ -1,6 +1,7 @@
 package web.test.controller;
 
 import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +32,6 @@ public class HelloController {
 
     @RequestMapping(value = "/")
     public String homepage() {
-
         return "index";
     }
 
@@ -42,7 +42,7 @@ public class HelloController {
         Account account = costsService.getAccountByUserId(foundUser.getId());
         logger.info("user account #" + account.getId());
         List<ServicesSection> sections = costsService.getSectionsForAccount(account);
-        logger.info("received list of sections: "+ sections);
+        logger.info("received list of sections: " + sections);
         ModelAndView modelAndView = new ModelAndView("account");
         modelAndView.addObject("account", account);
         modelAndView.addObject("sections", sections);
@@ -66,18 +66,20 @@ public class HelloController {
 
         return model;
     }
+
     @RequestMapping(value = "/logIn", method = RequestMethod.POST)
     public ModelAndView logIn(@RequestParam(value = "userLogin", required = true) String userLogin,
                               @RequestParam(value = "userPassword") String userPassword) {
-        ModelAndView modelAndView = new ModelAndView("welcome");
-        return modelAndView;
+
+        return userService.logIn(userLogin, userPassword);
     }
-    @RequestMapping(value = "/logIn", method = RequestMethod.POST)
+
+    @RequestMapping(value = "/singUp", method = RequestMethod.POST)
     public ModelAndView singUp(@RequestParam(value = "userLogin", required = true) String userLogin,
-                              @RequestParam(value = "userPassword") String userPassword,
+                               @RequestParam(value = "userPassword") String userPassword,
                                @RequestParam(value = "confirm") String confirm) {
-        ModelAndView modelAndView = new ModelAndView("welcome");
-        return modelAndView;
+
+        return null;
     }
 
 }
