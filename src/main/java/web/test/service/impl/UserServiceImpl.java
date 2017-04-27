@@ -32,6 +32,7 @@ public class UserServiceImpl implements UserService {
      *
      * @return a list of persons
      */
+    @Transactional
     public List<User> getAll() {
         return userDao.getAll();
     }

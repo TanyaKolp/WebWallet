@@ -1,7 +1,9 @@
 package web.test.service.impl;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import web.test.dao.AccountDao;
 import web.test.dao.ServicesSectionDao;
 import web.test.dao.TypeServiceDao;
@@ -17,6 +19,7 @@ import java.util.List;
  */
 @Service("costsService")
 public class CostsServiceImpl implements CostsService {
+    final static Logger logger = Logger.getLogger(CostsServiceImpl.class);
     @Autowired
     private AccountDao accountDao;
     @Autowired
@@ -26,13 +29,16 @@ public class CostsServiceImpl implements CostsService {
 
 
     @Override
+    @Transactional
     public Account getAccountByUserId(Integer id) {
         return accountDao.getAccountByUserId(id);
     }
 
 
     @Override
+    @Transactional
     public List<ServicesSection> getSectionsForAccount(Account account) {
+        logger.info("load list of sections");
         List<ServicesSection> result = servicesSectionDao.getSectionsByAccountID(account.getId());
         setAllWorth(result);
         return result;
@@ -44,15 +50,20 @@ public class CostsServiceImpl implements CostsService {
         return typeServiceDao.getTypesBySectionId(sectionID);
     }
 
+    @Transactional
     private void setAllWorth(List<ServicesSection> servicesSections) {
+        logger.info("SETTING allWorth..");
         List<TypeService> typesBySectionId = null;
         for (ServicesSection ss : servicesSections) {
             Double allWorth = 0.0;
+            logger.info("get types by section id #" + ss.getId());
             typesBySectionId = typeServiceDao.getTypesBySectionId(ss.getId());
             for (TypeService typeService : typesBySectionId) {
                 allWorth = allWorth + typeService.getWorth();
             }
+            logger.info("set worth = "+allWorth+" for section #" + ss.getId());
             ss.setAllWorth(allWorth);
+            servicesSectionDao.update(ss);
         }
     }
 }
