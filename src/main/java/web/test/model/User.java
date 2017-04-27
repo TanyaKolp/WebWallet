@@ -2,13 +2,14 @@ package web.test.model;
 
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Created by tania on 11/14/16.
  */
 @Entity
 @Table(name = "Users")
-public class User {
+public class User extends Model{
     public User() {
     }
 
@@ -17,10 +18,8 @@ public class User {
         this.password = password;
     }
 
-
-    public User(String firstName, String lastName, String login, String password) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public User(String name, String login, String password) {
+        this.name = name;
         this.login = login;
         this.password = password;
     }
@@ -30,16 +29,22 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "firstName")
-    private String firstName;
-    @Column(name = "lastName")
-    private String lastName;
-    @Column(length = 20, unique = true, nullable = false)
+    @Column(name = "user_name")
+    private String name;
+    @Column(name = "user_login", length = 20, unique = true, nullable = false)
     private String login;
-    @Column(length = 20, nullable = false)
+    @Column(name = "user_password", length = 20, nullable = false)
     private String password;
-    @Column(nullable = false)
-    private Boolean admin = false;
+    @Column(name = "user_date_birth")
+    private Date birthday;
+    @Column(name = "user_email")
+    private String email;
+
+    @OneToOne(mappedBy = "user")
+    private Account account;
+
+    @OneToOne(mappedBy = "user")
+    private Location location;
 
     public Integer getId() {
         return id;
@@ -47,39 +52,6 @@ public class User {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Boolean getAdmin() {
-        return admin;
-    }
-
-    public Boolean isAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(Boolean admin) {
-        this.admin = admin;
-    }
-
-    @Override
-    public String toString() {
-        return id.toString() + " - " + firstName + " - " + lastName;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public String getLogin() {
@@ -98,9 +70,33 @@ public class User {
         this.password = password;
     }
 
-    public void setLoginAndPassword(String login, String password) {
-        this.login = login;
-        this.password = password;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Date getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    @Override
+    public String toString() {
+        return id.toString() + " - " + name + " - " + login;
     }
 
 }
