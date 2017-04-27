@@ -1,17 +1,20 @@
 package web.test.controller;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import web.test.model.Account;
+import web.test.model.ServicesSection;
 import web.test.model.User;
+import web.test.service.AccountService;
 import web.test.service.UserService;
+import web.test.service.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -21,12 +24,27 @@ import java.util.List;
 public class HelloController {
     @Autowired
     private UserService userService;
-//    @Autowired
-//    private SessionFactory sessionFactory;
+    @Autowired
+    private CostsService costsService;
 
     @RequestMapping(value = "/")
-    public ModelAndView homepage() {
-        return new ModelAndView("index");
+    public String homepage() {
+
+        return "index";
+    }
+
+    @RequestMapping(value = "/a", method = RequestMethod.POST)
+    public String showAccount(@RequestParam(value = "userName", required = true) String userName,
+                              Map<String, Object> map) {
+        System.out.println("userName= " + userName);
+        User foundUser = userService.getUserByName(userName);
+        Account account = costsService.getAccountByUserId(foundUser.getId());
+        List<ServicesSection> sections = costsService.getSectionsForAccount(account);
+        System.out.println("НННННН SECTION SECTION SECTION");
+        System.out.println(sections);
+        map.put("account", account);
+        map.put("sections", sections);
+        return "account";
     }
 
     @RequestMapping(value = "/welcome")
