@@ -1,5 +1,6 @@
 package web.test.controller;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,12 +10,10 @@ import org.springframework.web.servlet.ModelAndView;
 import web.test.model.Account;
 import web.test.model.ServicesSection;
 import web.test.model.User;
-import web.test.service.AccountService;
 import web.test.service.UserService;
 import web.test.service.*;
 
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -22,10 +21,13 @@ import java.util.Map;
  */
 @Controller
 public class HelloController {
+    static Logger logger = Logger.getLogger(HelloController.class);
+
     @Autowired
     private UserService userService;
     @Autowired
     private CostsService costsService;
+
 
     @RequestMapping(value = "/")
     public String homepage() {
@@ -33,18 +35,18 @@ public class HelloController {
         return "index";
     }
 
-    @RequestMapping(value = "/a", method = RequestMethod.POST)
-    public String showAccount(@RequestParam(value = "userName", required = true) String userName,
-                              Map<String, Object> map) {
-        System.out.println("userName= " + userName);
+    @RequestMapping(value = "/accountInfo", method = RequestMethod.POST)
+    public ModelAndView showAccount(@RequestParam(value = "userName", required = true) String userName) {
+        logger.info("POST (/accountInfo): showAccount for user " + userName);
         User foundUser = userService.getUserByName(userName);
         Account account = costsService.getAccountByUserId(foundUser.getId());
+        logger.info("user account #" + account.getId());
         List<ServicesSection> sections = costsService.getSectionsForAccount(account);
-        System.out.println("НННННН SECTION SECTION SECTION");
-        System.out.println(sections);
-        map.put("account", account);
-        map.put("sections", sections);
-        return "account";
+        logger.info("received list of sections: "+ sections);
+        ModelAndView modelAndView = new ModelAndView("account");
+        modelAndView.addObject("account", account);
+        modelAndView.addObject("sections", sections);
+        return modelAndView;
     }
 
     @RequestMapping(value = "/welcome")
@@ -64,4 +66,18 @@ public class HelloController {
 
         return model;
     }
+    @RequestMapping(value = "/logIn", method = RequestMethod.POST)
+    public ModelAndView logIn(@RequestParam(value = "userLogin", required = true) String userLogin,
+                              @RequestParam(value = "userPassword") String userPassword) {
+        ModelAndView modelAndView = new ModelAndView("welcome");
+        return modelAndView;
+    }
+    @RequestMapping(value = "/logIn", method = RequestMethod.POST)
+    public ModelAndView singUp(@RequestParam(value = "userLogin", required = true) String userLogin,
+                              @RequestParam(value = "userPassword") String userPassword,
+                               @RequestParam(value = "confirm") String confirm) {
+        ModelAndView modelAndView = new ModelAndView("welcome");
+        return modelAndView;
+    }
+
 }
