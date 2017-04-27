@@ -11,7 +11,6 @@ body {
     <div align="center">
         <h1> Welcome, ${userLogin}! </h1><br>
     </div>
-
 <div align="left">
      <h2>Account information</h2>
      <table border="1" cellpadding="5">

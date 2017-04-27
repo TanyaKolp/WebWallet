@@ -15,11 +15,15 @@ body {
             <tr>
                 <th>ID</th>
                 <th>Name</th>
+                <th>Login</th>
+                <th>Password</th>
             </tr>
             <c:forEach var="user" items="${lists}">
                 <tr>
                     <td><c:out value="${user.id}" /></td>
                     <td><c:out value="${user.name}" /></td>
+                    <td><c:out value="${user.login}" /></td>
+                    <td><c:out value="${user.password}" /></td>
                 </tr>
             </c:forEach>
         </table>

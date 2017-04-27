@@ -70,7 +70,6 @@ public class HelloController {
     @RequestMapping(value = "/logIn", method = RequestMethod.POST)
     public ModelAndView logIn(@RequestParam(value = "userLogin", required = true) String userLogin,
                               @RequestParam(value = "userPassword") String userPassword) {
-
         return userService.logIn(userLogin, userPassword);
     }
 

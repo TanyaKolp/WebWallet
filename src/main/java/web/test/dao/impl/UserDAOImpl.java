@@ -76,6 +76,7 @@ public class UserDAOImpl implements UserDao {
         Session session = getSession();
         logger.info("create query - get by login");
         User user = (User) session.createQuery("from User as u where u.login = '" + login + "'").uniqueResult();
+
         return user;
     }
 

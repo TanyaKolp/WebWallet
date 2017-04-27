@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface UserDao extends ItemDao<User>{
     public User getUserByName(String name);
+
     public User getUserByLogin(String login);
 
 }

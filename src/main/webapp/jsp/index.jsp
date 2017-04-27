@@ -11,6 +11,7 @@ body {
 <body>
 <div align="center">
     <h1> Welcome to Wallet!</h1>
+
 		<h2>
 	    	<form action="logIn"  method="post">
                        Enter your login: <input type="text" name="userLogin">
