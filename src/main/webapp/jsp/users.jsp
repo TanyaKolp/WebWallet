@@ -1,7 +1,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html>
 <head>
-<title>Spring MVC Tutorial Series by Crunchify.com</title>
+<title>Wallet</title>
 <style type="text/css">
 body {
 	background-image: url('http://crunchify.com/bg.png');
@@ -14,25 +14,16 @@ body {
             <caption><h2>List of users</h2></caption>
             <tr>
                 <th>ID</th>
-                <th>login</th>
+                <th>Name</th>
             </tr>
             <c:forEach var="user" items="${lists}">
                 <tr>
-                    <td><c:out value="${user.getId}" /></td>
-                    <td><c:out value="${user.getLogin}" /></td>
+                    <td><c:out value="${user.id}" /></td>
+                    <td><c:out value="${user.name}" /></td>
                 </tr>
             </c:forEach>
         </table>
     </div>
 	<br>
-	<div style="text-align:center">
-		<h2>
-			All users- test<br> <br>
-			<c:forEach var="user" items="${lists}">
-                                <c:out value="${user}" /><br> <br>
-                                <c:out value="${user}" /><br> <br>
-             </c:forEach>
-		</h2>
-	</div>
 </body>
 </html>
