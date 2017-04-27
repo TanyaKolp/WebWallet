@@ -3,21 +3,19 @@ package web.test.dao.impl;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-import web.test.dao.UserDao;
-import web.test.model.User;
+import web.test.dao.ServicesSectionDao;
+import web.test.model.ServicesSection;
 
 import java.util.List;
 
 /**
- * Created by tania on 15.04.17.
+ * Created by tania on 25.04.17.
  */
 @Repository
-public class UserDAOImpl implements UserDao {
+public class ServicesSectionDaoImp implements ServicesSectionDao {
     @Autowired
     public SessionFactory sessionFactory;
 
@@ -30,41 +28,30 @@ public class UserDAOImpl implements UserDao {
     }
 
     @Override
-    @Transactional
-    public void create(User user) {
+    public ServicesSection getById(Integer id) {
         Session session = getSession();
-        session.save(user);
+        ServicesSection result = (ServicesSection) session.createQuery("from ServicesSection where id = " + id).uniqueResult();
+        return result;
     }
 
     @Override
-    public void update(User model) {
-
-    }
-
-    @Override
-    public void delete(User model) {
-
-    }
-
-    @Override
-    public User getById(Integer id) {
+    public List<ServicesSection> getAll() {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    @Transactional
-    public List<User> getAll() {
-        Session session = getSession();
-        return session.createQuery("from User").list();
+    public void create(ServicesSection model) {
+
     }
 
     @Override
-    @Transactional
-    public User getUserByName(String name) {
-        Session session = getSession();
-        User user = (User) session.createQuery("from User as u where u.name = '" + name + "'").uniqueResult();
-        return user;
+    public void update(ServicesSection model) {
+
+    }
+
+    @Override
+    public void delete(ServicesSection model) {
+
     }
 
     private Session getSession() {
@@ -77,4 +64,11 @@ public class UserDAOImpl implements UserDao {
         return session;
     }
 
+    @Override
+    public List<ServicesSection> getSectionsByAccountID(Integer accountId) {
+        Session session = getSession();
+        List<ServicesSection> result = session.createQuery("from ServicesSection as ss where ss.account.id = "
+                + accountId).list();
+        return result;
+    }
 }

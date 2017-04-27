@@ -8,8 +8,7 @@ import java.util.List;
  * Created by tania on 15.04.17.
  */
 
-public interface UserDao {
-    public void create(User user);
-    public List<User> getAll();
+public interface UserDao extends ItemDao<User>{
+    public User getUserByName(String name);
 
 }
