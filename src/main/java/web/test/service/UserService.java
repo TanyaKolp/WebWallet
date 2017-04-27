@@ -14,4 +14,5 @@ public interface UserService {
     public User getUserByName(String name);
     public User getUserByLogin(String login);
     ModelAndView logIn(String userLogin, String userPassword);
+    ModelAndView singUp(String userLogin, String userPassword, String confirm);
 }

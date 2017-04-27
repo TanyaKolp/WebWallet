@@ -11,6 +11,7 @@ import web.test.dao.UserDao;
 import web.test.model.Account;
 import web.test.model.User;
 import web.test.service.UserService;
+
 import java.util.List;
 
 
@@ -73,7 +74,18 @@ public class UserServiceImpl implements UserService {
         return modelAndView;
     }
 
-    private void addAccountInfo(User user) {
-
+    @Override
+    public ModelAndView singUp(String userLogin, String userPassword, String confirm) {
+        ModelAndView modelAndView = new ModelAndView();
+        if(userPassword.contentEquals(confirm)){
+            User user = new User(userLogin,userPassword);
+            userDao.create(user);
+            modelAndView.setViewName("welcome");
+            modelAndView.addObject("userLogin", userLogin);
+        }else {
+            modelAndView.setViewName("signUp");
+            modelAndView.addObject("error", "Password and Confirm password is not match");
+        }
+        return modelAndView;
     }
 }

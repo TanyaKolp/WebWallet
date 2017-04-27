@@ -33,7 +33,7 @@ body {
 
             </table>
         </div>
-<div >
+<div style="text-align:center">
 
             <table border="1" cellpadding="5">
                 <caption><h2>Expenses account</h2></caption>

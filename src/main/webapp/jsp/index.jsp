@@ -20,7 +20,7 @@ body {
             </form><br> <br>
 		</h2>
 		<h2>${error}</h2>
-		<h3>or <a href="singUp.html">Sing up</a> </h3>
+		<h3>or <a href="signUp.html">Sing up</a> </h3>
 </div>
     <div align="right">
         <h3><button><a href="users.html">All users</a></button></h3>

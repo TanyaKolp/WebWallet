@@ -34,7 +34,10 @@ public class HelloController {
     public String homepage() {
         return "index";
     }
-
+    @RequestMapping(value = "/signUp")
+    public String signUpPae() {
+        return "signUp";
+    }
     @RequestMapping(value = "/accountInfo", method = RequestMethod.POST)
     public ModelAndView showAccount(@RequestParam(value = "userName", required = true) String userName) {
         logger.info("POST (/accountInfo): showAccount for user " + userName);
@@ -47,14 +50,6 @@ public class HelloController {
         modelAndView.addObject("account", account);
         modelAndView.addObject("sections", sections);
         return modelAndView;
-    }
-
-    @RequestMapping(value = "/welcome")
-    public ModelAndView helloWorld() {
-        System.out.println("MY!!!!!!!!!!!!!!!!!!!!!!!!");
-        String message = "<br><div style='text-align:center;'>"
-                + "<h3>Hello World, TEST</h3>This message is coming from HelloController.java</div><br><br>";
-        return new ModelAndView("welcome", "message", message);
     }
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
@@ -73,12 +68,11 @@ public class HelloController {
         return userService.logIn(userLogin, userPassword);
     }
 
-    @RequestMapping(value = "/singUp", method = RequestMethod.POST)
-    public ModelAndView singUp(@RequestParam(value = "userLogin", required = true) String userLogin,
+    @RequestMapping(value = "/regUser", method = RequestMethod.POST)
+    public ModelAndView registerUser(@RequestParam(value = "userLogin", required = true) String userLogin,
                                @RequestParam(value = "userPassword") String userPassword,
                                @RequestParam(value = "confirm") String confirm) {
 
-        return null;
+        return userService.singUp(userLogin,userPassword,confirm);
     }
-
 }
