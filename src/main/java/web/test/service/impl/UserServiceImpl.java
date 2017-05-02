@@ -49,6 +49,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public ModelAndView logIn(String userLogin, String userPassword) {
         ModelAndView modelAndView = new ModelAndView();
         try {
@@ -76,11 +77,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public ModelAndView singUp(String userLogin, String userPassword, String confirm) {
         ModelAndView modelAndView = new ModelAndView();
+        User user = userDao.getUserByLogin(userLogin);
+        if(user != null){
+            modelAndView.setViewName("signUp");
+            modelAndView.addObject("error", "Login is busy.");
+            return modelAndView;
+        }
         if (userPassword.contentEquals(confirm)) {
-            User user = new User(userLogin, userPassword);
+            user = new User(userLogin, userPassword);
+            Account account = new Account();
+            account.setUser(user);
+            user.setAccount(account);
             userDao.create(user);
+            accountDao.create(account);
             modelAndView.setViewName("welcome");
             modelAndView.addObject("userLogin", userLogin);
         } else {
@@ -89,6 +101,7 @@ public class UserServiceImpl implements UserService {
         }
         return modelAndView;
     }
+
 
     @Override
     public void update(User user) {

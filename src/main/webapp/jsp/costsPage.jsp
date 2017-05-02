@@ -18,40 +18,34 @@ body {
 	</div>
 	<div >
             <table border="1" cellpadding="5">
-                <caption><h2>Account information</h2></caption>
+                <h2>Account information</h2>
                 <tr>
                     <th>ID</th>
                     <th>Balance</th>
                     <th>Type</th>
                 </tr>
-
                     <tr>
                         <td>${account.id}</td>
                         <td>${account.balance}</td>
                         <td>${account.type}</td>
                     </tr>
-
             </table>
         </div>
-<div style="text-align:center">
+<div align="center">
 
             <table border="1" cellpadding="5">
-                <caption><h2>Expenses account</h2></caption>
+            <h2>Costs</h2>
                 <tr>
                     <th>Type</th>
                     <th>Sum</th>
-
                 </tr>
-
                     <c:forEach var="sec" items="${sections}">
                                     <tr>
                                         <td><c:out value="${sec.name}" /></td>
                                         <td><c:out value="${sec.allWorth}" /></td>
                                     </tr>
-                                </c:forEach>
-
+                    </c:forEach>
             </table>
         </div>
-
 </body>
 </html>

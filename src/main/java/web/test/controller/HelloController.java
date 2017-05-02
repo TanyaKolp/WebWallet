@@ -13,6 +13,11 @@ import web.test.model.User;
 import web.test.service.UserService;
 import web.test.service.*;
 
+import javax.xml.crypto.Data;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 
@@ -36,16 +41,19 @@ public class HelloController {
     }
 
     @RequestMapping(value = "/signUp")
-    public String signUpPae() {
+    public String signUpPage() {
         return "signUp";
     }
 
-    @RequestMapping(value = "/accountInfo")
-    public ModelAndView showAccount(@ModelAttribute("user") User user) {
-        logger.info("POST: showAccount for user " + user.getName());
-//        User foundUser = userService.getUserByName(userName);
-        User foundUser = user;
-        Account account = costsService.getAccountByUserId(foundUser.getId());
+    @RequestMapping(value = "/account")
+    public String editAccountPage() {
+        return "editAccountPage";
+    }
+
+    @RequestMapping(value = "/costs")
+    public ModelAndView showCosts(@ModelAttribute("user") User user) {
+        logger.info("POST: showCosts for user " + user.getName());
+        Account account = costsService.getAccountByUserId(user.getId());
         logger.info("user account #" + account.getId());
         List<ServicesSection> sections = costsService.getSectionsForAccount(account);
         logger.info("received list of sections: " + sections);
@@ -80,23 +88,35 @@ public class HelloController {
         return userService.singUp(userLogin, userPassword, confirm);
     }
 
-    @RequestMapping(value = "/addAccount", method = RequestMethod.POST)
-    @Transactional
-    public ModelAndView addAccount(@ModelAttribute("user") User user,
-                                   @RequestParam(value = "accountType") String accountType,
-                                   @RequestParam(value = "accountBalance") String accountBalance) {
+    @RequestMapping(value = "/editAccount", method = RequestMethod.POST)
+    public ModelAndView editAccount(@ModelAttribute("user") User user,
+                                    @RequestParam(value = "accountType", required = false) String accountType,
+                                    @RequestParam(value = "accountBalance", required = false) String accountBalance,
+                                    @RequestParam(value = "payrollDate", required = false) String date) {
         ModelAndView modelAndView = new ModelAndView("welcome");
-        Account account = null;
-        try {
-            account = new Account(new Double(accountBalance), accountType);
-            account.setUser(user);
-            costsService.createAccount(account);
-        } catch (NumberFormatException e) {
-            modelAndView.addObject("error", "Not a number: field balance.");
-            return modelAndView;
+        Account account = user.getAccount();
+        account.setType(accountType);
+        if (!accountBalance.isEmpty()) {
+            try {
+                account.setBalance(Double.valueOf(accountBalance));
+            } catch (NumberFormatException e) {
+                modelAndView.setViewName("editAccountPage");
+                modelAndView.addObject("error", "Not a number: field balance.");
+                return modelAndView;
+            }
         }
-        user.setAccount(account);
-        userService.update(user);
+        if (!date.isEmpty()) {
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                Date parsed = format.parse(date);
+                account.setPayrollDate(parsed);
+            } catch (ParseException e) {
+                modelAndView.setViewName("editAccountPage");
+                modelAndView.addObject("error", "Wrong date.");
+                return modelAndView;
+            }
+        }
+        costsService.updateAccount(account);
         modelAndView.addObject("account", account);
         modelAndView.addObject("userLogin", user.getLogin());
         return modelAndView;

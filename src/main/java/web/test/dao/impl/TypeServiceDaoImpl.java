@@ -40,14 +40,12 @@ public class TypeServiceDaoImpl implements TypeServiceDao {
     }
 
     @Override
-    @Transactional
     public void create(TypeService model) {
         Session session = getSession();
         session.save(model);
     }
 
     @Override
-    @Transactional
     public void update(TypeService model) {
         Session session = getSession();
         session.saveOrUpdate(model);
@@ -59,7 +57,6 @@ public class TypeServiceDaoImpl implements TypeServiceDao {
     }
 
     @Override
-    @Transactional
     public List<TypeService> getTypesBySectionId(Integer sectionID) {
         List<TypeService> typeList = null;
         Session session = getSession();

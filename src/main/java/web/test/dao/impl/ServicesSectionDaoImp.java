@@ -44,7 +44,6 @@ public class ServicesSectionDaoImp implements ServicesSectionDao {
     }
 
     @Override
-    @Transactional
     public ServicesSection getById(Integer id) {
         logger.info("getting by id");
         Session session = getSession();
@@ -63,7 +62,6 @@ public class ServicesSectionDaoImp implements ServicesSectionDao {
     }
 
     @Override
-    @Transactional
     public void update(ServicesSection model) {
         logger.info("update #" + model.getId());
         Session session = getSession();
@@ -77,7 +75,6 @@ public class ServicesSectionDaoImp implements ServicesSectionDao {
 
 
     @Override
-    @Transactional
     public List<ServicesSection> getSectionsByAccountID(Integer accountId) {
         logger.info("getting by accountID = "+accountId);
         Session session = getSession();

@@ -31,14 +31,12 @@ public class UserDAOImpl implements UserDao {
     }
 
     @Override
-    @Transactional
     public void create(User user) {
         Session session = getSession();
         session.save(user);
     }
 
     @Override
-    @Transactional
     public void update(User model) {
         Session session = getSession();
         session.saveOrUpdate(model);
@@ -56,7 +54,6 @@ public class UserDAOImpl implements UserDao {
     }
 
     @Override
-    @Transactional
     public List<User> getAll() {
         Session session = getSession();
         logger.info("create query - get all users");
@@ -64,7 +61,6 @@ public class UserDAOImpl implements UserDao {
     }
 
     @Override
-    @Transactional
     public User getUserByName(String name) {
         Session session = getSession();
         logger.info("create query - get by name");

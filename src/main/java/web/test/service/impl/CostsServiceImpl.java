@@ -27,9 +27,8 @@ public class CostsServiceImpl implements CostsService {
     @Autowired
     private ServicesSectionDao servicesSectionDao;
 
-
-    @Override
     @Transactional
+    @Override
     public Account getAccountByUserId(Integer id) {
         return accountDao.getAccountByUserId(id);
     }
@@ -71,7 +70,7 @@ public class CostsServiceImpl implements CostsService {
             for (TypeService typeService : typesBySectionId) {
                 allWorth = allWorth + typeService.getWorth();
             }
-            logger.info("set worth = "+allWorth+" for section #" + ss.getId());
+            logger.info("set worth = " + allWorth + " for section #" + ss.getId());
             ss.setAllWorth(allWorth);
         }
 //        for (ServicesSection ss : servicesSections){
