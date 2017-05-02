@@ -1,4 +1,5 @@
 <%@taglib uri = "http://www.springframework.org/tags/form" prefix = "form"%>
+
 <html>
 <head>
 <title>Wallet</title>
@@ -13,7 +14,7 @@ body {
     <h1> Welcome to Wallet!</h1>
 
 		<h2>
-	    	<form action="logIn"  method="post">
+			    	<form action="logIn"  method="post">
                        Enter your login: <input type="text" name="userLogin">
                        Enter your password: <input type="text" name="userPassword">
                       <input type="submit" value="LogIn">

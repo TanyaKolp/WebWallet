@@ -42,6 +42,7 @@ public class UserDAOImpl implements UserDao {
     public void update(User model) {
         Session session = getSession();
         session.saveOrUpdate(model);
+        logger.info("updated " + model.getLogin());
     }
 
     @Override

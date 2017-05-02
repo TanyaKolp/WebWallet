@@ -13,5 +13,7 @@ public interface CostsService {
     public Account getAccountByUserId(Integer id);
     public List<ServicesSection> getSectionsForAccount(Account account);
     public List<TypeService> getTypes(Integer sectionID);
+    public void createAccount(Account account);
+    public void updateAccount(Account account);
 
 }

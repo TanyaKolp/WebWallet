@@ -4,9 +4,8 @@ import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import web.test.model.Account;
 import web.test.model.ServicesSection;
@@ -21,6 +20,7 @@ import java.util.List;
  * Created by tania on 12.04.17.
  */
 @Controller
+@SessionAttributes("user")
 public class HelloController {
     static Logger logger = Logger.getLogger(HelloController.class);
 
@@ -34,14 +34,17 @@ public class HelloController {
     public String homepage() {
         return "index";
     }
+
     @RequestMapping(value = "/signUp")
     public String signUpPae() {
         return "signUp";
     }
-    @RequestMapping(value = "/accountInfo", method = RequestMethod.POST)
-    public ModelAndView showAccount(@RequestParam(value = "userName", required = true) String userName) {
-        logger.info("POST (/accountInfo): showAccount for user " + userName);
-        User foundUser = userService.getUserByName(userName);
+
+    @RequestMapping(value = "/accountInfo")
+    public ModelAndView showAccount(@ModelAttribute("user") User user) {
+        logger.info("POST: showAccount for user " + user.getName());
+//        User foundUser = userService.getUserByName(userName);
+        User foundUser = user;
         Account account = costsService.getAccountByUserId(foundUser.getId());
         logger.info("user account #" + account.getId());
         List<ServicesSection> sections = costsService.getSectionsForAccount(account);
@@ -65,14 +68,42 @@ public class HelloController {
     @RequestMapping(value = "/logIn", method = RequestMethod.POST)
     public ModelAndView logIn(@RequestParam(value = "userLogin", required = true) String userLogin,
                               @RequestParam(value = "userPassword") String userPassword) {
+        logger.info("log in user: " + userLogin);
         return userService.logIn(userLogin, userPassword);
     }
 
     @RequestMapping(value = "/regUser", method = RequestMethod.POST)
     public ModelAndView registerUser(@RequestParam(value = "userLogin", required = true) String userLogin,
-                               @RequestParam(value = "userPassword") String userPassword,
-                               @RequestParam(value = "confirm") String confirm) {
+                                     @RequestParam(value = "userPassword") String userPassword,
+                                     @RequestParam(value = "confirm") String confirm) {
+        logger.info("sing up user: " + userLogin);
+        return userService.singUp(userLogin, userPassword, confirm);
+    }
 
-        return userService.singUp(userLogin,userPassword,confirm);
+    @RequestMapping(value = "/addAccount", method = RequestMethod.POST)
+    @Transactional
+    public ModelAndView addAccount(@ModelAttribute("user") User user,
+                                   @RequestParam(value = "accountType") String accountType,
+                                   @RequestParam(value = "accountBalance") String accountBalance) {
+        ModelAndView modelAndView = new ModelAndView("welcome");
+        Account account = null;
+        try {
+            account = new Account(new Double(accountBalance), accountType);
+            account.setUser(user);
+            costsService.createAccount(account);
+        } catch (NumberFormatException e) {
+            modelAndView.addObject("error", "Not a number: field balance.");
+            return modelAndView;
+        }
+        user.setAccount(account);
+        userService.update(user);
+        modelAndView.addObject("account", account);
+        modelAndView.addObject("userLogin", user.getLogin());
+        return modelAndView;
+    }
+
+    @ModelAttribute("user")
+    public User getUser() {
+        return new User();
     }
 }

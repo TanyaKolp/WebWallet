@@ -48,7 +48,7 @@ public class AccountDAOimpl implements AccountDao {
         Account account;
         Session session = getSession();
         account = (Account) session.createQuery("from Account as ac where ac.user.id = " + id).uniqueResult();
-
+        logger.info("got account for user #" + id);
         return account;
     }
 
@@ -63,8 +63,11 @@ public class AccountDAOimpl implements AccountDao {
     }
 
     @Override
+    @Transactional
     public void create(Account model) {
-
+        Session session = getSession();
+        session.saveOrUpdate(model);
+        logger.info("created account #" + model.getId());
     }
 
     @Override
@@ -72,6 +75,7 @@ public class AccountDAOimpl implements AccountDao {
     public void update(Account model) {
         Session session = getSession();
         session.saveOrUpdate(model);
+        logger.info("updated account #" + model.getId());
     }
 
     @Override

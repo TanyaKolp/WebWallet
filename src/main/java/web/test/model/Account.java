@@ -32,6 +32,14 @@ public class Account extends Model{
     @OneToMany(mappedBy = "account")
     private List<ServicesSection> servicesSections;
 
+    public Account() {
+    }
+
+    public Account(Double balance, String type) {
+        this.balance = balance;
+        this.type = type;
+    }
+
     public List<ServicesSection> getServicesSections() {
         return servicesSections;
     }

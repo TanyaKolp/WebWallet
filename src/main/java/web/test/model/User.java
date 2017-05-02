@@ -46,6 +46,22 @@ public class User extends Model{
     @OneToOne(mappedBy = "user")
     private Location location;
 
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
     public Integer getId() {
         return id;
     }

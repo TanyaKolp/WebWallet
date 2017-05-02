@@ -15,4 +15,6 @@ public interface UserService {
     public User getUserByLogin(String login);
     ModelAndView logIn(String userLogin, String userPassword);
     ModelAndView singUp(String userLogin, String userPassword, String confirm);
+    public void update(User user);
+
 }

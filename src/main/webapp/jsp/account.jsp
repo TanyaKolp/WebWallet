@@ -13,7 +13,7 @@ body {
 	<br>
 	<div style="text-align:center">
 		<h1>
-			Your account!!<br> <br>
+			Your account.<br> <br>
 		</h1>
 	</div>
 	<div >
