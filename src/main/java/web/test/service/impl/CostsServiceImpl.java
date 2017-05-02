@@ -50,6 +50,16 @@ public class CostsServiceImpl implements CostsService {
         return typeServiceDao.getTypesBySectionId(sectionID);
     }
 
+    @Override
+    public void createAccount(Account account) {
+        accountDao.create(account);
+    }
+
+    @Override
+    public void updateAccount(Account account) {
+        accountDao.update(account);
+    }
+
     @Transactional
     private void setAllWorth(List<ServicesSection> servicesSections) {
         logger.info("SETTING allWorth..");
@@ -63,7 +73,9 @@ public class CostsServiceImpl implements CostsService {
             }
             logger.info("set worth = "+allWorth+" for section #" + ss.getId());
             ss.setAllWorth(allWorth);
-            servicesSectionDao.update(ss);
         }
+//        for (ServicesSection ss : servicesSections){
+//            servicesSectionDao.update(ss);
+//        }
     }
 }
