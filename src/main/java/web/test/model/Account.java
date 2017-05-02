@@ -1,9 +1,8 @@
 package web.test.model;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
 import javax.persistence.*;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,6 +20,8 @@ public class Account extends Model{
     private Double balance;
     @Column(name = "account_type")
     private String type;
+    @Column(name = "account_payrollData")
+    private Date payrollDate;
 
     @OneToOne
     @JoinColumn(name = "user_id")
@@ -33,11 +34,25 @@ public class Account extends Model{
     private List<ServicesSection> servicesSections;
 
     public Account() {
+        this.balance = 0.0;
+        this.type =  "Default";
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DATE, cal.getActualMaximum(Calendar.DATE));
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        this.payrollDate = cal.getTime();
     }
 
     public Account(Double balance, String type) {
         this.balance = balance;
         this.type = type;
+    }
+
+    public Date getPayrollDate() {
+        return payrollDate;
+    }
+
+    public void setPayrollDate(Date payrollDate) {
+        this.payrollDate = payrollDate;
     }
 
     public List<ServicesSection> getServicesSections() {
