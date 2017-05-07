@@ -12,7 +12,12 @@ import web.test.model.Account;
 import web.test.model.User;
 import web.test.service.UserService;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 
 @Service("userService")
@@ -106,6 +111,33 @@ public class UserServiceImpl implements UserService {
     @Override
     public void update(User user) {
         userDao.update(user);
+    }
+
+    @Override
+    @Transactional
+    public ModelAndView editProfile(Map<String, String> map, User user) {
+        logger.info("edit user");
+        ModelAndView modelAndView = new ModelAndView("welcome");
+        if (!map.get("name").isEmpty()) {
+           user.setName(map.get("name"));
+        }
+        if(!map.get("email").isEmpty()){
+            user.setEmail(map.get("email"));
+        }
+        if (!map.get("birthday").isEmpty()) {
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                Date parsed = format.parse(map.get("birthday"));
+                user.setBirthday(parsed);
+            } catch (ParseException e) {
+                modelAndView.setViewName("editProfilePage");
+                modelAndView.addObject("error", "Wrong date.");
+                return modelAndView;
+            }
+        }
+        userDao.update(user);
+        modelAndView.addObject("userLogin", user.getLogin());
+        return modelAndView;
     }
 
 }

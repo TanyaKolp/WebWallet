@@ -31,22 +31,10 @@ public class ServicesSectionDaoImp implements ServicesSectionDao {
         return sessionFactory;
     }
 
-    private Session getSession() {
-        Session session;
-        try {
-            session = sessionFactory.getCurrentSession();
-            logger.info("get current session ");
-        } catch (HibernateException e) {
-            logger.info("open session by hand");
-            session = sessionFactory.openSession();
-        }
-        return session;
-    }
-
     @Override
     public ServicesSection getById(Integer id) {
         logger.info("getting by id");
-        Session session = getSession();
+        Session session = sessionFactory.getCurrentSession();
         ServicesSection result = (ServicesSection) session.createQuery("from ServicesSection where id = " + id).uniqueResult();
         return result;
     }
@@ -64,7 +52,7 @@ public class ServicesSectionDaoImp implements ServicesSectionDao {
     @Override
     public void update(ServicesSection model) {
         logger.info("update #" + model.getId());
-        Session session = getSession();
+        Session session = sessionFactory.getCurrentSession();
         session.saveOrUpdate(model);
     }
 
@@ -76,8 +64,8 @@ public class ServicesSectionDaoImp implements ServicesSectionDao {
 
     @Override
     public List<ServicesSection> getSectionsByAccountID(Integer accountId) {
-        logger.info("getting by accountID = "+accountId);
-        Session session = getSession();
+        logger.info("getting by accountID = " + accountId);
+        Session session = sessionFactory.getCurrentSession();
         List<ServicesSection> result = session.createQuery("from ServicesSection as ss where ss.account.id = "
                 + accountId).list();
         return result;

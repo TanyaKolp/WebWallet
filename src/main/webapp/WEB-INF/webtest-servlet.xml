@@ -1,18 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="
         http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+        http://www.springframework.org/schema/aop
+http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
         http://www.springframework.org/schema/mvc
         http://www.springframework.org/schema/mvc/spring-mvc.xsd
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context.xsd">
     <context:annotation-config/>
     <context:component-scan base-package="web.test"/>
+    <!--<bean id="myService" class="web.test.service.impl.CostsServiceImpl"/>-->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
 
-    <!--<bean id="controller" class="web.test.controller.HelloController"/>-->
     <bean id="propertyConfigurer"
           class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="location" value="/WEB-INF/jdbc.properties"/>
@@ -37,7 +46,7 @@
             <value>WEB-INF/hibernate.cfg.xml</value>
         </property>
         <!--<property name="configurationClass">-->
-            <!--<value>org.hibernate.cfg.AnnotatedClassType</value>-->
+        <!--<value>org.hibernate.cfg.AnnotatedClassType</value>-->
         <!--</property>-->
         <property name="annotatedClasses">
             <list>

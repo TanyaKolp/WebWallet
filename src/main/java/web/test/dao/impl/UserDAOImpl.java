@@ -32,13 +32,14 @@ public class UserDAOImpl implements UserDao {
 
     @Override
     public void create(User user) {
-        Session session = getSession();
+        Session session = sessionFactory.getCurrentSession();
         session.save(user);
     }
 
     @Override
     public void update(User model) {
-        Session session = getSession();
+        logger.info("updating...");
+        Session session = sessionFactory.getCurrentSession();
         session.saveOrUpdate(model);
         logger.info("updated " + model.getLogin());
     }
@@ -55,14 +56,14 @@ public class UserDAOImpl implements UserDao {
 
     @Override
     public List<User> getAll() {
-        Session session = getSession();
+        Session session = sessionFactory.getCurrentSession();
         logger.info("create query - get all users");
         return session.createQuery("from User").list();
     }
 
     @Override
     public User getUserByName(String name) {
-        Session session = getSession();
+        Session session = sessionFactory.getCurrentSession();
         logger.info("create query - get by name");
         User user = (User) session.createQuery("from User as u where u.name = '" + name + "'").uniqueResult();
         return user;
@@ -70,23 +71,10 @@ public class UserDAOImpl implements UserDao {
 
     @Override
     public User getUserByLogin(String login) {
-        Session session = getSession();
+        Session session = sessionFactory.getCurrentSession();
         logger.info("create query - get by login");
         User user = (User) session.createQuery("from User as u where u.login = '" + login + "'").uniqueResult();
 
         return user;
     }
-
-    private Session getSession() {
-        Session session;
-        try {
-            session = sessionFactory.getCurrentSession();
-            logger.info("get current session ");
-        } catch (HibernateException e) {
-            logger.info("open session by hand");
-            session = sessionFactory.openSession();
-        }
-        return session;
-    }
-
 }

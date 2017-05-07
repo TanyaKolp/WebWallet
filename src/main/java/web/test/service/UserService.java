@@ -1,5 +1,6 @@
 package web.test.service;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.ModelAndView;
 import web.test.model.User;
 
@@ -16,5 +17,5 @@ public interface UserService {
     ModelAndView logIn(String userLogin, String userPassword);
     ModelAndView singUp(String userLogin, String userPassword, String confirm);
     public void update(User user);
-
+    ModelAndView editProfile(Map<String, String> map, User user);
 }

@@ -41,13 +41,13 @@ public class TypeServiceDaoImpl implements TypeServiceDao {
 
     @Override
     public void create(TypeService model) {
-        Session session = getSession();
+        Session session = sessionFactory.getCurrentSession();
         session.save(model);
     }
 
     @Override
     public void update(TypeService model) {
-        Session session = getSession();
+        Session session = sessionFactory.getCurrentSession();
         session.saveOrUpdate(model);
     }
 
@@ -59,20 +59,8 @@ public class TypeServiceDaoImpl implements TypeServiceDao {
     @Override
     public List<TypeService> getTypesBySectionId(Integer sectionID) {
         List<TypeService> typeList = null;
-        Session session = getSession();
+        Session session = sessionFactory.getCurrentSession();
         typeList = (List<TypeService>) session.createQuery("from TypeService as t where t.servicesSection.id = " + sectionID).list();
         return typeList;
-    }
-
-    private Session getSession() {
-        Session session;
-        try {
-            session = sessionFactory.getCurrentSession();
-            logger.info("get current session ");
-        } catch (HibernateException e) {
-            logger.info("open session by hand");
-            session = sessionFactory.openSession();
-        }
-        return session;
     }
 }

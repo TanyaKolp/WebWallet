@@ -15,8 +15,8 @@ body {
 
 		<h2>
 			    	<form action="logIn"  method="post">
-                       Enter your login: <input type="text" name="userLogin">
-                       Enter your password: <input type="text" name="userPassword">
+                       Enter your login: <input type="text" name="userLogin"><br> <br>
+                       Enter your password: <input type="text" name="userPassword"><br> <br>
                       <input type="submit" value="LogIn">
             </form><br> <br>
 		</h2>

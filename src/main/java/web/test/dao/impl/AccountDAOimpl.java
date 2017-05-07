@@ -30,22 +30,10 @@ public class AccountDAOimpl implements AccountDao {
         return sessionFactory;
     }
 
-    private Session getSession() {
-        Session session;
-        try {
-            session = sessionFactory.getCurrentSession();
-            logger.info("get current session ");
-        } catch (HibernateException e) {
-            logger.info("open session by hand");
-            session = sessionFactory.openSession();
-        }
-        return session;
-    }
-
     @Override
     public Account getAccountByUserId(Integer id) {
         logger.info("getting by userID...");
-        Session session = getSession();
+        Session session = sessionFactory.getCurrentSession();
         Account account = (Account) session.createQuery("from Account as ac where ac.user.id = " + id).uniqueResult();
         logger.info("got account for user #" + id);
         return account;
@@ -64,16 +52,17 @@ public class AccountDAOimpl implements AccountDao {
     @Override
     public void create(Account model) {
         logger.info("creating..");
-        Session session = getSession();
-        session.merge(model);
+        Session session = sessionFactory.getCurrentSession();
+        session.save(model);
         logger.info("created account #" + model.getId());
     }
 
     @Override
     public void update(Account model) {
         logger.info("updating...");
-        Session session = getSession();
-        session.saveOrUpdate(model);
+        Session session = sessionFactory.getCurrentSession();
+//        session.saveOrUpdate(model);
+        session.merge(model);
         logger.info("updated account #" + model.getId());
     }
 
