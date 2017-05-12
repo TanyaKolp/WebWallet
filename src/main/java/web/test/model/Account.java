@@ -10,7 +10,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "Account")
-public class Account extends Model{
+public class Account extends Model {
 
     @Id
     @Column(name = "account_id", unique = true, nullable = false)
@@ -31,11 +31,11 @@ public class Account extends Model{
     private BudgetHead budgetHead;
 
     @OneToMany(mappedBy = "account")
-    private List<ServicesSection> servicesSections;
+    private List<TypeService> typeServices;
 
     public Account() {
         this.balance = 0.0;
-        this.type =  "Default";
+        this.type = "Default";
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.DATE, cal.getActualMaximum(Calendar.DATE));
         cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -55,12 +55,12 @@ public class Account extends Model{
         this.payrollDate = payrollDate;
     }
 
-    public List<ServicesSection> getServicesSections() {
-        return servicesSections;
+    public List<TypeService> getTypeServices() {
+        return typeServices;
     }
 
-    public void setServicesSections(List<ServicesSection> servicesSections) {
-        this.servicesSections = servicesSections;
+    public void setTypeServices(List<TypeService> typeServices) {
+        this.typeServices = typeServices;
     }
 
     public User getUser() {
