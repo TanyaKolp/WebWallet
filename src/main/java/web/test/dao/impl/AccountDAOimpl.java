@@ -61,7 +61,6 @@ public class AccountDAOimpl implements AccountDao {
     public void update(Account model) {
         logger.info("updating...");
         Session session = sessionFactory.getCurrentSession();
-//        session.saveOrUpdate(model);
         session.merge(model);
         logger.info("updated account #" + model.getId());
     }

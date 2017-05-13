@@ -61,13 +61,11 @@ public class ServicesSectionDaoImp implements ServicesSectionDao {
 
     }
 
-
     @Override
-    public List<ServicesSection> getSectionsByAccountID(Integer accountId) {
-        logger.info("getting by accountID = " + accountId);
+    public List<String> getNames() {
+        logger.info("getting names..");
         Session session = sessionFactory.getCurrentSession();
-        List<ServicesSection> result = session.createQuery("from ServicesSection as ss where ss.account.id = "
-                + accountId).list();
-        return result;
+        List<String> names = (List<String>) session.createQuery("select ss.name from ServicesSection as ss").list();
+        return names;
     }
 }
