@@ -109,6 +109,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
+    @Transactional
     public void update(User user) {
         userDao.update(user);
     }
@@ -118,6 +119,7 @@ public class UserServiceImpl implements UserService {
     public ModelAndView editProfile(Map<String, String> map, User user) {
         logger.info("edit user");
         ModelAndView modelAndView = new ModelAndView("welcome");
+        modelAndView.addObject("account", user.getAccount());
         if (!map.get("name").isEmpty()) {
            user.setName(map.get("name"));
         }
@@ -139,5 +141,4 @@ public class UserServiceImpl implements UserService {
         modelAndView.addObject("userLogin", user.getLogin());
         return modelAndView;
     }
-
 }

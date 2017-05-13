@@ -1,20 +1,20 @@
 package web.test.controller;
 
-import javassist.scopedpool.SoftValueHashMap;
 import org.apache.log4j.Logger;
-import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 import web.test.model.Account;
 import web.test.model.ServicesSection;
 import web.test.model.User;
 import web.test.service.UserService;
 import web.test.service.*;
+import web.test.service.impl.CostsServiceImpl;
 
-import javax.xml.crypto.Data;
+import java.beans.PropertyEditorSupport;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -37,10 +37,14 @@ public class HelloController {
     @Autowired
     private CostsService costsService;
 
-
     @RequestMapping(value = "/")
     public String homepage() {
         return "index";
+    }
+
+    @RequestMapping(value = "/welcome")
+    public String welcomePage() {
+        return "welcome";
     }
 
     @RequestMapping(value = "/signUp")
@@ -68,11 +72,10 @@ public class HelloController {
         logger.info("POST: showCosts for user " + user.getName());
         Account account = costsService.getAccountByUserId(user.getId());
         logger.info("user account #" + account.getId());
-        List<ServicesSection> sections = costsService.getSectionsForAccount(account);
-        logger.info("received list of sections: " + sections);
+        Map<String, Double> map = costsService.getMapCategoryAndSumByAccountID(account.getId());
         ModelAndView modelAndView = new ModelAndView("costsPage");
         modelAndView.addObject("account", account);
-        modelAndView.addObject("sections", sections);
+        modelAndView.addObject("sums", map);
         return modelAndView;
     }
 
@@ -89,7 +92,9 @@ public class HelloController {
     @RequestMapping(value = "/logIn", method = RequestMethod.POST)
     public ModelAndView logIn(@RequestParam(value = "userLogin", required = true) String userLogin,
                               @RequestParam(value = "userPassword") String userPassword) {
+
         logger.info("log in user: " + userLogin);
+//        getUser(userLogin);
         return userService.logIn(userLogin, userPassword);
     }
 
@@ -100,11 +105,12 @@ public class HelloController {
         logger.info("sing up user: " + userLogin);
         return userService.singUp(userLogin, userPassword, confirm);
     }
+
     @RequestMapping(value = "/addCost", method = RequestMethod.POST)
     public ModelAndView addCost(@ModelAttribute("user") User user,
-                                    @RequestParam(value = "sectionType") String sectionType,
-                                    @RequestParam(value = "name") String name,
-                                    @RequestParam(value = "worth") String worth) {
+                                @RequestParam(value = "sectionType") String sectionType,
+                                @RequestParam(value = "name") String name,
+                                @RequestParam(value = "worth") String worth) {
         Map<String, String> requestParam = new HashMap();
         requestParam.put("sectionType", sectionType);
         requestParam.put("name", name);
@@ -116,41 +122,33 @@ public class HelloController {
     public ModelAndView editAccount(@ModelAttribute("user") User user,
                                     @RequestParam(value = "accountType", required = false) String accountType,
                                     @RequestParam(value = "accountBalance", required = false) String accountBalance,
-                                    @RequestParam(value = "payrollDate", required = false) String date) {
+                                    @RequestParam(value = "payrollMonth", required = false) String month,
+                                    @RequestParam(value = "payrollDay", required = false) Integer day) {
+        logger.info("editing account...");
         Map<String, String> requestParam = new HashMap();
         requestParam.put("accountType", accountType);
         requestParam.put("accountBalance", accountBalance);
+        String date = month + "-" + day;
         requestParam.put("payrollDate", date);
         return costsService.editAccount(requestParam, user);
     }
 
     @RequestMapping(value = "/editProfile", method = RequestMethod.POST)
     public ModelAndView editProfile(@ModelAttribute("user") User user,
-                                    @RequestParam(value = "name", required = false) String name,
-                                    @RequestParam(value = "email", required = false) String email,
-                                    @RequestParam(value = "birthday", required = false) Date date) {
+                                    @RequestParam(value = "nameU", required = false) String nameU,
+                                    @RequestParam(value = "emailU", required = false) String emailU,
+                                    @RequestParam(value = "bdU", required = false) String bdU) {
         logger.info("edit profile...");
-        ModelAndView modelAndView = new ModelAndView("welcome");
-        user.setName(name);
-        user.setEmail(email);
-        user.setBirthday(date);
-//        if (!date.) {
-//            DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-//            try {
-//                Date parsed = format.parse(date);
-//                user.setBirthday(parsed);
-//            } catch (ParseException e) {
-//                modelAndView.setViewName("editProfilePage");
-//                modelAndView.addObject("error", "Wrong date.");
-//                return modelAndView;
-//            }
-//        }
-        return modelAndView;
+        Map<String, String> requestParam = new HashMap();
+        requestParam.put("name", nameU);
+        requestParam.put("email", emailU);
+        requestParam.put("birthday", bdU);
+        return userService.editProfile(requestParam, user);
     }
 
     @ModelAttribute("user")
     public User getUser() {
         logger.info("get user");
-        return new User("false","false");
+        return new User();
     }
 }
