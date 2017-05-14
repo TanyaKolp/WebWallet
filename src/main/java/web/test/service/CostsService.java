@@ -20,6 +20,5 @@ public interface CostsService {
     public ModelAndView editAccount(Map<String,String> param, User user);
     ModelAndView addCost(Map<String, String> requestParam, User user);
     List<String> getCategories();
-    List<Double> getSumsByCategory(Account account);
     Map<String,Double> getMapCategoryAndSumByAccountID(Integer accountID);
 }

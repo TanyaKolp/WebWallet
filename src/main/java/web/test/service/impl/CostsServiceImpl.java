@@ -97,57 +97,40 @@ public class CostsServiceImpl implements CostsService {
         logger.info("adding cost..");
         ModelAndView modelAndView = new ModelAndView("welcome");
         Account account = user.getAccount();
+        modelAndView.addObject("account", account);
         TypeService typeService = new TypeService();
-        typeService.setName(requestParam.get("name"));
+        Double worth = null;
         try {
-            Double worth = Double.valueOf(requestParam.get("worth"));
-            typeService.setWorth(worth);
-            account.setBalance(account.getBalance()-worth);
-            accountDao.update(account);
+            worth = Double.valueOf(requestParam.get("worth"));
         } catch (NumberFormatException e) {
             modelAndView.addObject("error", "Not a number: field worth.");
             return modelAndView;
         }
+        if (account.getBalance() >= worth) {
+            typeService.setWorth(worth);
+            account.setBalance(account.getBalance() - worth);
+            accountDao.update(account);
+        }else {
+            modelAndView.addObject("error", "Not enough money.");
+            return modelAndView;
+        }
+        ServicesSection section = servicesSectionDao.getByName(requestParam.get("sectionType"));
+        typeService.setAccount(account);
+        typeService.setName(requestParam.get("name"));
+        typeService.setServicesSection(section);
         typeServiceDao.update(typeService);
-        modelAndView.addObject("account", account);
-        modelAndView.addObject("userLogin", user.getLogin());
         return modelAndView;
     }
 
     @Override
+    @Transactional
     public List<String> getCategories() {
         return servicesSectionDao.getNames();
     }
 
     @Override
     @Transactional
-    public List<Double> getSumsByCategory(Account account) {
-        List<Double> sums = new ArrayList<>();
-        List<TypeService> typeServiceList = typeServiceDao.getTypesByAccountId(account.getId());
-
-        for (TypeService tp : typeServiceList) {
-        }
-        return sums;
-    }
-
-    @Override
-    @Transactional
     public Map<String, Double> getMapCategoryAndSumByAccountID(Integer accountID) {
         return typeServiceDao.getMapOfSumAndWorthBySectionsForAccountId(accountID);
-    }
-
-    @Transactional
-    private void calculateSum(List<ServicesSection> servicesSections) {
-        logger.info("SETTING allWorth..");
-        List<TypeService> typesBySectionId = null;
-        for (ServicesSection ss : servicesSections) {
-            Double allWorth = 0.0;
-            logger.info("get types by section id #" + ss.getId());
-//            typesBySectionId = typeServiceDao.getTypesBySectionId(ss.getId());
-//            for (TypeService typeService : typesBySectionId) {
-//                allWorth = allWorth + typeService.getWorth();
-//            }
-            logger.info("set worth = " + allWorth + " for section #" + ss.getId());
-        }
     }
 }

@@ -68,4 +68,12 @@ public class ServicesSectionDaoImp implements ServicesSectionDao {
         List<String> names = (List<String>) session.createQuery("select ss.name from ServicesSection as ss").list();
         return names;
     }
+
+    @Override
+    public ServicesSection getByName(String name) {
+        logger.info("getting Section by name..");
+        Session session = sessionFactory.getCurrentSession();
+        ServicesSection section = (ServicesSection) session.createQuery("from ServicesSection as ss where ss.name = '" + name + "'").uniqueResult();
+        return section;
+    }
 }

@@ -43,8 +43,10 @@ public class HelloController {
     }
 
     @RequestMapping(value = "/welcome")
-    public String welcomePage() {
-        return "welcome";
+    public ModelAndView welcomePage(@ModelAttribute("user") User user) {
+        ModelAndView modelAndView = new ModelAndView("welcome");
+        modelAndView.addObject("account", user.getAccount());
+        return modelAndView;
     }
 
     @RequestMapping(value = "/signUp")

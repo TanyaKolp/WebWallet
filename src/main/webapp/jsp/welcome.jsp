@@ -80,10 +80,9 @@ function addInput(){
         </tr>
 		</table>
 	<input class="w3-button w3-grey" type="button" value="+" onClick="addInput();">
-
+<input type="submit" value="Save" class="w3-button w3-grey">
 	</form>
 	</div>
-	<input type="submit" value="Save" class="w3-button w3-grey">
 </div>
 
 </div>
