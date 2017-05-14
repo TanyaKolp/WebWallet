@@ -9,4 +9,5 @@ import java.util.List;
  */
 public interface ServicesSectionDao extends ItemDao<ServicesSection>{
     List<String> getNames();
+    ServicesSection getByName(String name);
 }
