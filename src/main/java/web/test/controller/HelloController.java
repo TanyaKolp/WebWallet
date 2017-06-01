@@ -1,24 +1,20 @@
 package web.test.controller;
 
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 import web.test.model.Account;
-import web.test.model.ServicesSection;
+import web.test.model.TypeService;
 import web.test.model.User;
 import web.test.service.UserService;
 import web.test.service.*;
-import web.test.service.impl.CostsServiceImpl;
 
-import java.beans.PropertyEditorSupport;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.awt.*;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,7 +67,7 @@ public class HelloController {
 
     @RequestMapping(value = "/costs")
     public ModelAndView showCosts(@ModelAttribute("user") User user) {
-        logger.info("POST: showCosts for user " + user.getName());
+        logger.info("showCosts for user " + user.getName());
         Account account = costsService.getAccountByUserId(user.getId());
         logger.info("user account #" + account.getId());
         Map<String, Double> map = costsService.getMapCategoryAndSumByAccountID(account.getId());
@@ -85,6 +81,25 @@ public class HelloController {
     public ModelAndView allUsers() {
         List<User> list = userService.getAll();
         //return back to users.jsp
+        ModelAndView model = new ModelAndView("users");
+        model.addObject("lists", list);
+
+        return model;
+    }
+
+    @RequestMapping(value = "/test", consumes = "application/json", method = RequestMethod.POST)
+    public ModelAndView test(@RequestBody String userJson) {
+        List<User> list = userService.getAll();
+        //return back to users.jsp
+        try {
+            User[] users = new ObjectMapper().readValue(userJson, User[].class);
+            for (int i = 0; i < users.length; i++) {
+                logger.info("test ARRAY: " + i + " - " + users[i].getLogin());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         ModelAndView model = new ModelAndView("users");
         model.addObject("lists", list);
 
@@ -108,16 +123,34 @@ public class HelloController {
         return userService.singUp(userLogin, userPassword, confirm);
     }
 
-    @RequestMapping(value = "/addCost", method = RequestMethod.POST)
+    @RequestMapping(value = "/addCost", consumes = "application/json", method = RequestMethod.POST)
     public ModelAndView addCost(@ModelAttribute("user") User user,
-                                @RequestParam(value = "sectionType") String sectionType,
-                                @RequestParam(value = "name") String name,
-                                @RequestParam(value = "worth") String worth) {
-        Map<String, String> requestParam = new HashMap();
-        requestParam.put("sectionType", sectionType);
-        requestParam.put("name", name);
-        requestParam.put("worth", worth);
-        return costsService.addCost(requestParam, user);
+                                @RequestBody String costsJson) {
+        try {
+            logger.info("try parse json: " + costsJson);
+            TypeService[] products = new ObjectMapper().readValue(costsJson, TypeService[].class);
+            logger.info("prod "+products);
+            for (int i = 0; i < products.length; i++) {
+                logger.info("PRODUCT " + i + "\n\t values " + products[i].getName() +
+                        ", " + products[i].getWorth() + " sec " + products[i].getServicesSection());
+                String errorMessage = validateInput(products[i]);
+                if (errorMessage != null) {
+                    return new ModelAndView("welcome", "error", errorMessage);
+                }
+            }
+            return costsService.addCost(products,user);
+        } catch (Exception e) {
+            logger.info("exp");
+            logger.error("exp", e);
+            return new ModelAndView("welcome", "error", "Not a number: field worth.");
+        }
+    }
+
+    private String validateInput(TypeService product) {
+        if (product.getWorth() == null || product.getName() == null) {
+            return "Please fill in all fields";
+        }
+        return null;
     }
 
     @RequestMapping(value = "/editAccount", method = RequestMethod.POST)

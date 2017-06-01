@@ -45,6 +45,6 @@ public class ServicesSection extends Model {
 
     @Override
     public String toString() {
-        return "section #"+id;
+        return "section #"+id+" - "+name;
     }
 }

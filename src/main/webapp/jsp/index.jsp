@@ -19,7 +19,7 @@ body {
 <div class="w3-display-middle">
 		  	<form class="w3-container" action="logIn"  method="post">
                        Enter your login: <input class="w3-input w3-border" type="text" name="userLogin"><br> <br>
-                       Enter your password: <input class="w3-input w3-border" type="text" name="userPassword"><br> <br>
+                       Enter your password: <input class="w3-input w3-border" type="password" name="userPassword"><br> <br>
                       <input class="w3-input w3-border" type="submit" value="LogIn">
             </form>
             <h3>or <a class="w3-button w3-medium w3-grey" href="signUp.html">Sign up</a></h3>

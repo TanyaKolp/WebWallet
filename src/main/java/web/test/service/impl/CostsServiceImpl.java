@@ -17,9 +17,6 @@ import web.test.service.CostsService;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.MonthDay;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -93,34 +90,59 @@ public class CostsServiceImpl implements CostsService {
 
     @Override
     @Transactional
-    public ModelAndView addCost(Map<String, String> requestParam, User user) {
-        logger.info("adding cost..");
+    public ModelAndView addCost(TypeService[] products, User user) {
+        logger.info("adding " + products.length + " cost(s)");
+        logger.info("Account" +"");
         ModelAndView modelAndView = new ModelAndView("welcome");
         Account account = user.getAccount();
+        logger.info("Account" + account.getBalance());
+        String errorMessage = checkInputAndBalance(products, account);
         modelAndView.addObject("account", account);
-        TypeService typeService = new TypeService();
-        Double worth = null;
-        try {
-            worth = Double.valueOf(requestParam.get("worth"));
-        } catch (NumberFormatException e) {
-            modelAndView.addObject("error", "Not a number: field worth.");
-            return modelAndView;
-        }
-        if (account.getBalance() >= worth) {
-            typeService.setWorth(worth);
-            account.setBalance(account.getBalance() - worth);
+        if (errorMessage == null) {
+            Double sum = 0.0;
+            for (int i = 0; i < products.length; i++) {
+                resetSection(products[i]);
+                products[i].setAccount(account);
+                typeServiceDao.create(products[i]);
+                sum = sum + products[i].getWorth();
+            }
+            account.setBalance(account.getBalance() - sum);
             accountDao.update(account);
-        }else {
-            modelAndView.addObject("error", "Not enough money.");
-            return modelAndView;
+
+        } else {
+            modelAndView.addObject("error", errorMessage);
         }
-        ServicesSection section = servicesSectionDao.getByName(requestParam.get("sectionType"));
-        typeService.setAccount(account);
-        typeService.setName(requestParam.get("name"));
-        typeService.setServicesSection(section);
-        typeServiceDao.update(typeService);
         return modelAndView;
     }
+
+    private void resetSection(TypeService product) {
+        ServicesSection section = servicesSectionDao.getByName(product.getServicesSection().getName());
+        product.setServicesSection(section);
+        logger.info("RESET section to " + section);
+    }
+
+    private TypeService getTypeService(Map<String, String> requestParam, Account account, Double worth) {
+        TypeService typeService = new TypeService();
+        typeService.setWorth(worth);
+        typeService.setName(requestParam.get("name"));
+        ServicesSection section = servicesSectionDao.getByName(requestParam.get("sectionType"));
+        typeService.setAccount(account);
+        typeService.setServicesSection(section);
+        typeServiceDao.update(typeService);
+        return typeService;
+    }
+
+    private String checkInputAndBalance(TypeService[] products, Account account) {
+        Double sum = 0.0;
+        for (int i = 0; i < products.length; i++) {
+            sum = sum + products[i].getWorth();
+        }
+        if (account.getBalance() < sum) {
+            return "Not enough money.";
+        }
+        return null;
+    }
+
 
     @Override
     @Transactional
